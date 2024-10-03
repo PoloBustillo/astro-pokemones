@@ -41,7 +41,8 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-
+01-foundation/node_modules/
+02-pokemons-static/node_modules/
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 

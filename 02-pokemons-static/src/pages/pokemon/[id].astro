@@ -1,0 +1,45 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from "../../layouts/Layout.astro";
+import PokemonCard from "@components/PokemonCard.astro";
+import type { PokemonListResponse } from "@interfaces/pokemons-list.response";
+export const getStaticPaths = (async () => {
+  const resp = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
+  const data = (await resp.json()) as PokemonListResponse;
+  const paths = data.results.map((pokemon) => ({
+    params: { id: pokemon.url.split("/")[6] },
+    props: {
+      name: pokemon.name,
+      url: pokemon.url,
+      id: pokemon.url.split("/")[6],
+    },
+  }));
+  return paths;
+}) satisfies GetStaticPaths;
+
+const { name, id, url } = Astro.props;
+const audioSrc = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`;
+---
+
+<Layout title="pokemon">
+  <section class="mt-10 mx-10 flex flex-col justify-center items-center">
+    <div>
+      <a href="/" class="cursor-pointer text-blue-400 hover:text-blue-600"
+        >Regresar</a
+      >
+      <PokemonCard name={name} url={url} isBig />
+      <audio class="m-2" controls>
+        <source src={audioSrc} type="audio/ogg" />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  </section>
+
+  <script>
+    const linkGoBack = document.querySelector("#goBack") as HTMLAnchorElement;
+    linkGoBack.addEventListener("click", () => {
+      console.log("Hello, on client");
+      history.back();
+    });
+  </script>
+</Layout>

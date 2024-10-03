@@ -1,0 +1,22 @@
+---
+const navItems = [
+  { href: "/", text: "Home" },
+  { href: "/contacto", text: "Contacto" },
+  { href: "/blog", text: "Blog" },
+  { href: "/community", text: "Community" },
+];
+---
+
+<nav class="navbar">
+  <ul class="navbar__menu flex flex-row justify-between">
+    {
+      navItems.map((item) => (
+        <li class="navbar__menu-item flex flex-ro text-center">
+          <a href={item.href} class="navbar__menu-link">
+            {item.text}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
