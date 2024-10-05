@@ -1,6 +1,8 @@
 ---
 import type { GetStaticPaths } from "astro";
 import Layout from "../../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
+
 import PokemonCard from "@components/PokemonCard.astro";
 import type { PokemonListResponse } from "@interfaces/pokemons-list.response";
 export const getStaticPaths = (async () => {
@@ -24,9 +26,32 @@ const audioSrc = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pok
 <Layout title="pokemon">
   <section class="mt-10 mx-10 flex flex-col justify-center items-center">
     <div>
-      <a href="/" class="cursor-pointer text-blue-400 hover:text-blue-600"
-        >Regresar</a
-      >
+      <div class="flex flex-row justify-around">
+        <div>
+          <button onclick="history.back()" class="text-blue-500"
+            >Regresar</button
+          >
+          <h2 class:list={["capitalize font-bold text-black", "text-3xl"]}>
+            #{id}
+            {name}
+          </h2>
+        </div>
+
+        <button data-name={name} data-id={id} id="heart" class="mt-8">
+          <Icon
+            class="hidden heart-filled"
+            size={30}
+            color={"red"}
+            name={"heart-filled"}
+          />
+          <Icon
+            class="heart-empty"
+            size={30}
+            color={"red"}
+            name={"heart-empty"}
+          />
+        </button>
+      </div>
       <PokemonCard name={name} url={url} isBig />
       <audio class="m-2" controls>
         <source src={audioSrc} type="audio/ogg" />
@@ -34,12 +59,56 @@ const audioSrc = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pok
       </audio>
     </div>
   </section>
-
-  <script>
-    const linkGoBack = document.querySelector("#goBack") as HTMLAnchorElement;
-    linkGoBack.addEventListener("click", () => {
-      console.log("Hello, on client");
-      history.back();
-    });
-  </script>
 </Layout>
+<style>
+  #heart {
+    @apply cursor-pointer;
+    @apply hover:animate-pulse;
+  }
+</style>
+<script>
+  import type { PokemonLocalStorage } from "@interfaces/pokemon-localStorage";
+
+  const handleHeartLoad = () => {
+    let favoritePokemons: PokemonLocalStorage[] =
+      JSON.parse(localStorage.getItem("favoritePokemons") ?? "[]") || [];
+
+    const heart = document.querySelector("#heart") as HTMLButtonElement;
+    const heartFilled = document.querySelector(".heart-filled") as SVGElement;
+    const heartEmpty = document.querySelector(".heart-empty") as SVGElement;
+    const { name, id } = heart.dataset;
+    const isFavorite = favoritePokemons.some(
+      (fav: PokemonLocalStorage) => fav.id === id
+    );
+    if (isFavorite) {
+      heartFilled.classList.remove("hidden");
+      heartEmpty.classList.add("hidden");
+    } else {
+      heartEmpty.classList.remove("hidden");
+      heartFilled.classList.add("hidden");
+    }
+    const toggleFavorite = () => {
+      if (isFavorite) {
+        favoritePokemons = favoritePokemons.filter(
+          (fav: PokemonLocalStorage) => fav.id !== id
+        );
+      } else {
+        if (name && id) {
+          favoritePokemons.push({ name, id });
+        }
+      }
+      localStorage.setItem(
+        "favoritePokemons",
+        JSON.stringify(favoritePokemons)
+      );
+    };
+
+    if (!heart) return;
+    heart.addEventListener("click", () => {
+      heartFilled.classList.toggle("hidden");
+      heartEmpty.classList.toggle("hidden");
+      toggleFavorite();
+    });
+  };
+  document.addEventListener("astro:page-load", handleHeartLoad);
+</script>

@@ -3,6 +3,7 @@ import type { GetStaticPaths } from "astro";
 import PokemonCard from "@components/PokemonCard.astro";
 import type { PokemonListResponse } from "@interfaces/pokemons-list.response";
 import Layout from "../../layouts/Layout.astro";
+import Title from "@components/Title.astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
   const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
@@ -18,9 +19,7 @@ const { page } = Astro.props;
 
 <Layout title={`Pokemon ${page.currentPage}`}>
   <main>
-    <h1 class="text-4xl text-pink-600">
-      Listado de <span class="text-gradient">Pokemons</span>
-    </h1>
+    <Title> Listado páginado </Title>
     <section
       class="mt-10 grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
     >

@@ -22,16 +22,17 @@ const front_default = `https://raw.githubusercontent.com/PokeAPI/sprites/master/
       { "border-none": isBig },
     ]}
   >
-    <img
-      transition:name={`${name}-image`}
-      transition:animate={fade({ duration: ".6s" })}
-      class:list={[{ "border-none w-72 h-72": isBig, "w-16 h-16": !isBig }]}
-      src={front_default}
-      alt={name}
-    />
-    <h2 class:list={["capitalize font-bold text-black", { "text-3xl": isBig }]}>
-      #{id}
-      {name}
-    </h2>
+    <div class="flex flex-row">
+      <div>
+     
+        <img
+          transition:name={`${name}-image`}
+          transition:animate={fade({ duration: ".6s" })}
+          class:list={[{ "border-none w-72 h-72": isBig, "w-16 h-16": !isBig }]}
+          src={front_default}
+          alt={name}
+        />
+      </div>
+    </div>
   </div>
 </a>
