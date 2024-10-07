@@ -1,7 +1,10 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
 import { siteConfig } from "../configs/site-configs";
-import BlogPost from "../components/BlogPost.astro";
+import Layout from "@layouts/Layout.astro";
+import BlogPost from "@components/BlogPost.astro";
+
+const blogPosts = await getCollection("blog");
 ---
 
 <html lang="en">
@@ -14,6 +17,7 @@ import BlogPost from "../components/BlogPost.astro";
   </head>
   <body>
     <Layout title="Blog">
+      <!-- component -->
       <section class="bg-white dark:bg-gray-900">
         <div class="container px-6 py-10 mx-auto">
           <h1
@@ -22,14 +26,8 @@ import BlogPost from "../components/BlogPost.astro";
             {siteConfig.title}
           </h1>
 
-          <div class="container px-6 py-10 mx-auto">
-            <div class="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
-              <BlogPost />
-              <BlogPost />
-              <BlogPost />
-              <BlogPost />
-              <BlogPost />
-            </div>
+          <div class="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
+            {blogPosts.map((post) => <BlogPost post={post} />)}
           </div>
         </div>
       </section>
